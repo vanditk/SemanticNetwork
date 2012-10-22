@@ -1,0 +1,4 @@
+david,isa,diabetics
+diabetics,shouldAvoid,sugar
+candy,contains,sugar
+snickers,ako,candy
