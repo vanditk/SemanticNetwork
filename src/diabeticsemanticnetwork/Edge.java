@@ -16,7 +16,22 @@ public class Edge {
     
     public Edge(){from = null;to = null;label = new String();}
     public Edge(Node tempFrom,String tempLabel,Node tempTo){from = tempFrom;to = tempTo; label = tempLabel;}
+    public Edge(String tempLabel){label = tempLabel;}
             
+    @Override
+    public boolean equals(Object x)
+    {
+        if(x instanceof Edge)
+        {
+            Edge t = (Edge)x;
+            return from.equals(t.getFrom()) && to.equals(t.getTo()) && label.equals(t.getLabel());
+        }
+        else 
+        {
+            return false;
+        }
+    }
+    
     /**
      * @return the from
      */
@@ -58,5 +73,7 @@ public class Edge {
     public void setLabel(String label) {
         this.label = label;
     }
+    
+    
     
 }

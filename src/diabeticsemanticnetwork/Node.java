@@ -14,11 +14,12 @@ import java.util.Map;
 public class Node{
     
     private String Value;
-    private Map<Edge,Node> from;
-    private Map<Edge,Node> to;
+    //not needed
+    
+    private Edge edge;
 
     
-    public Node(){Value = new String();from = new HashMap<Edge, Node>();to = new HashMap<Edge, Node>();}
+    public Node(){Value = new String();}
     public Node(String val){Value = val;}
       
     @Override
@@ -57,31 +58,21 @@ public class Node{
     }
 
     /**
+     * @return the edge
+     */
+    public Edge getEdge() {
+        return edge;
+    }
+
+    /**
+     * @param edge the edge to set
+     */
+    public void setEdge(Edge edge) {
+        this.edge = edge;
+    }
+
+    /**
      * @return the from
      */
-    public Map<Edge,Node> getFrom() {
-        return from;
-    }
-
-    /**
-     * @param from the from to set
-     */
-    public void setFrom(Map<Edge,Node> from) {
-        this.setFrom(from);
-    }
-
-    /**
-     * @return the to
-     */
-    public Map<Edge,Node> getTo() {
-        return to;
-    }
-
-    /**
-     * @param to the to to set
-     */
-    public void setTo(Map<Edge,Node> to) {
-        this.setTo(to);
-    }
-
-}
+    
+ }
