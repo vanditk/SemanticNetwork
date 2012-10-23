@@ -26,77 +26,86 @@ public class DiabeticSemanticNetwork {
         Map<String, Node> nodes = network.getNodes();
 
 
-        String query = "Who Does What";
+        String query = "A X sugar";
         String[] queryParams = query.split(" ");
         String val1 = queryParams[0].trim();
         String relationQuery = queryParams[1].trim();
         String val2 = queryParams[2].trim();
         ArrayList<ArrayList<String>> combinations = new ArrayList<ArrayList<String>>();
         ArrayList<String> keySet = new ArrayList<String>(network.getNodes().keySet());
-        ArrayList<String>relations = new ArrayList<String>();
-                
+        ArrayList<String> relations = new ArrayList<String>();
+
         //network.testFunctions();
-        if(isVariable(relationQuery))
-        {
-            
+        if (isVariable(relationQuery)) {
+
             relations.add("isA");
             relations.add("ako");
             relations.add("contains");
             relations.add("shouldAvoid");
-        }
-        else
-        {
+        } else {
             relations.add(relationQuery);
+
         }
-        
-        for(String relation: relations)
-        {
-            if (isVariable(val1) && isVariable(val2)) {
-                combinations = computeCombinations(keySet, keySet);
-            } else if (isVariable(val1) && !isVariable(val2)) {
-                ArrayList<String> newArray = new ArrayList<String>();
-                newArray.add(val2);
-                combinations = computeCombinations(keySet, newArray);
 
-            } else if (!isVariable(val1) && isVariable(val2)) {
-                ArrayList<String> newArray = new ArrayList<String>();
-                newArray.add(val1);
-                combinations = computeCombinations(newArray, keySet);
-            } else if (!isVariable(val1) && !isVariable(val2)) {
-                ArrayList<String> combi = new ArrayList<String>();
-                combi.add(val1);
-                combi.add(val2);
-                combinations.add(combi);
-            }
 
+        if (isVariable(val1) && isVariable(val2)) {
+            combinations = computeCombinations(keySet, keySet);
+        } else if (isVariable(val1) && !isVariable(val2)) {
+            ArrayList<String> newArray = new ArrayList<String>();
+            newArray.add(val2);
+            combinations = computeCombinations(keySet, newArray);
+
+        } else if (!isVariable(val1) && isVariable(val2)) {
+            ArrayList<String> newArray = new ArrayList<String>();
+            newArray.add(val1);
+            combinations = computeCombinations(newArray, keySet);
+        } else if (!isVariable(val1) && !isVariable(val2)) {
+            ArrayList<String> combi = new ArrayList<String>();
+            combi.add(val1);
+            combi.add(val2);
+            combinations.add(combi);
+        }
+        boolean isTrue = false;
+        for (String relation : relations) {
+            
             if (relation.equals("contains")) {
+
                 for (ArrayList<String> combi : combinations) {
                     if (network.contains(nodes.get(combi.get(0)), nodes.get(combi.get(1)))) {
                         System.out.println(combi.get(0) + " contains " + combi.get(1));
+                        isTrue = true;
 
                     }
+
                 }
             } else if (relation.equals("isA")) {
                 for (ArrayList<String> combi : combinations) {
                     if (network.isA(nodes.get(combi.get(0)), nodes.get(combi.get(1)))) {
                         System.out.println(combi.get(0) + " isA " + combi.get(1));
+                        isTrue = true;
                     }
                 }
             } else if (relation.equals("ako")) {
                 for (ArrayList<String> combi : combinations) {
                     if (network.aKindOf(nodes.get(combi.get(0)), nodes.get(combi.get(1)))) {
                         System.out.println(combi.get(0) + " ako " + combi.get(1));
+                        isTrue = true;
                     }
                 }
             } else if (relation.equals("shouldAvoid")) {
                 for (ArrayList<String> combi : combinations) {
                     if (network.shouldAvoid(nodes.get(combi.get(0)), nodes.get(combi.get(1)))) {
                         System.out.println(combi.get(0) + " shouldAvoid " + combi.get(1));
+                        isTrue = true;
                     }
                 }
             }
 
         }
+        
+            if (!isTrue) {
+                System.out.println(false);
+            }
 
         //System.out.println("combinations: " + combinations);
 

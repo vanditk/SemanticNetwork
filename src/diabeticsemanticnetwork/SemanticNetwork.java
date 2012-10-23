@@ -59,7 +59,7 @@ public class SemanticNetwork {
     {
 //        System.out.println("david is a diabetic: "+isA(nodes.get("david"),nodes.get("diabetics")));
 //        System.out.println("snickers ako candy: "+ aKindOf(nodes.get("snickers"), nodes.get("candy")));
-//        System.out.println("snickers contains sugar: "+ contains(nodes.get("snickers"), nodes.get("sugar")));
+       System.out.println("snickers contains sugar: "+ contains(nodes.get("snickers"), nodes.get("sugar")));
 //        //System.out.println("diabetics shouldAvoid sugar: "+ shouldAvoid(nodes.get("diabetics"), nodes.get("sugar")));
 //        //System.out.println("david shouldAvoid sugar: "+ shouldAvoid(nodes.get("david"), nodes.get("sugar")));
 //        System.out.println("david shouldAvoid candy: "+ shouldAvoid(nodes.get("david"), nodes.get("candy")));

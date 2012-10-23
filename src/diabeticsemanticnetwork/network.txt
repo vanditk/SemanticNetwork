@@ -2,3 +2,4 @@ david,isa,diabetics
 diabetics,shouldAvoid,sugar
 candy,contains,sugar
 snickers,ako,candy
+starWars,ako,movie
