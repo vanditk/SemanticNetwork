@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Set;
 
 /**
  *
@@ -25,19 +24,28 @@ public class DiabeticSemanticNetwork {
         SemanticNetwork network = createNetwork();
         Map<String, Node> nodes = network.getNodes();
 
-
-        String query = "A X sugar";
-        String[] queryParams = query.split(" ");
-        String val1 = queryParams[0].trim();
-        String relationQuery = queryParams[1].trim();
-        String val2 = queryParams[2].trim();
+//
+//        String query = "X A Y";        
+//        System.out.println("Your Query: "+query);
+//        String[] queryParams = query.split(" ");
+//        String val1 = queryParams[0].trim();
+//        String relationQuery = queryParams[1].trim();
+//        String val2 = queryParams[2].trim();
+//        
+        String function = args[0].trim();
+        boolean recursive = function.equalsIgnoreCase("value");
+        String val1 = args[1].trim();
+        String relationQuery = args[2].trim();
+        String val2 = args[3].trim();
+        System.out.println("Your Query: " + val1 + " " + relationQuery + " " + val2);
         ArrayList<ArrayList<String>> combinations = new ArrayList<ArrayList<String>>();
         ArrayList<String> keySet = new ArrayList<String>(network.getNodes().keySet());
         ArrayList<String> relations = new ArrayList<String>();
-
-        //network.testFunctions();
+        boolean bindings[] = {false,false,false};
+        
+        network.testFunctions();
         if (isVariable(relationQuery)) {
-
+            bindings[1] = true;
             relations.add("isA");
             relations.add("ako");
             relations.add("contains");
@@ -49,17 +57,25 @@ public class DiabeticSemanticNetwork {
 
 
         if (isVariable(val1) && isVariable(val2)) {
+            bindings[0]= true;
+            bindings[2] = true;
             combinations = computeCombinations(keySet, keySet);
         } else if (isVariable(val1) && !isVariable(val2)) {
+            bindings[0]= true;
+            
             ArrayList<String> newArray = new ArrayList<String>();
             newArray.add(val2);
             combinations = computeCombinations(keySet, newArray);
 
         } else if (!isVariable(val1) && isVariable(val2)) {
+            
+            bindings[2] = true;
             ArrayList<String> newArray = new ArrayList<String>();
             newArray.add(val1);
             combinations = computeCombinations(newArray, keySet);
         } else if (!isVariable(val1) && !isVariable(val2)) {
+            bindings[0]= false;
+            bindings[2] = false;
             ArrayList<String> combi = new ArrayList<String>();
             combi.add(val1);
             combi.add(val2);
@@ -67,45 +83,52 @@ public class DiabeticSemanticNetwork {
         }
         boolean isTrue = false;
         for (String relation : relations) {
-            
+
             if (relation.equals("contains")) {
 
                 for (ArrayList<String> combi : combinations) {
-                    if (network.contains(nodes.get(combi.get(0)), nodes.get(combi.get(1)))) {
-                        System.out.println(combi.get(0) + " contains " + combi.get(1));
+                    if (network.contains(nodes.get(combi.get(0)), nodes.get(combi.get(1)), recursive)) {
+                        if(bindings[0]){System.out.println(val1+" = "+combi.get(0));}
+                        if(bindings[1]){System.out.println(relationQuery+" = "+relation);}
+                        if(bindings[2]){System.out.println(val2+" = "+combi.get(1));}
+                        //System.out.println(combi.get(0) + " contains " + combi.get(1));
                         isTrue = true;
-
                     }
-
                 }
             } else if (relation.equals("isA")) {
                 for (ArrayList<String> combi : combinations) {
-                    if (network.isA(nodes.get(combi.get(0)), nodes.get(combi.get(1)))) {
-                        System.out.println(combi.get(0) + " isA " + combi.get(1));
+                    if (network.isA(nodes.get(combi.get(0)), nodes.get(combi.get(1)), recursive)) {
+                        if(bindings[0]){System.out.println(val1+" = "+combi.get(0));}
+                        if(bindings[1]){System.out.println(relationQuery+" = "+relation);}
+                        if(bindings[2]){System.out.println(val2+" = "+combi.get(1));}
                         isTrue = true;
                     }
                 }
             } else if (relation.equals("ako")) {
                 for (ArrayList<String> combi : combinations) {
-                    if (network.aKindOf(nodes.get(combi.get(0)), nodes.get(combi.get(1)))) {
-                        System.out.println(combi.get(0) + " ako " + combi.get(1));
+                    if (network.aKindOf(nodes.get(combi.get(0)), nodes.get(combi.get(1)), recursive)) {
+                        if(bindings[0]){System.out.println(val1+" = "+combi.get(0));}
+                        if(bindings[1]){System.out.println(relationQuery+" = "+relation);}
+                        if(bindings[2]){System.out.println(val2+" = "+combi.get(1));}
                         isTrue = true;
                     }
                 }
             } else if (relation.equals("shouldAvoid")) {
                 for (ArrayList<String> combi : combinations) {
-                    if (network.shouldAvoid(nodes.get(combi.get(0)), nodes.get(combi.get(1)))) {
-                        System.out.println(combi.get(0) + " shouldAvoid " + combi.get(1));
+                    if (network.shouldAvoid(nodes.get(combi.get(0)), nodes.get(combi.get(1)), recursive)) {
+                        if(bindings[0]){System.out.println(val1+" = "+combi.get(0));}
+                        if(bindings[1]){System.out.println(relationQuery+" = "+relation);}
+                        if(bindings[2]){System.out.println(val2+" = "+combi.get(1));}
                         isTrue = true;
                     }
                 }
             }
 
         }
-        
-            if (!isTrue) {
-                System.out.println(false);
-            }
+
+        if (!isTrue) {
+            System.out.println(false);
+        }
 
         //System.out.println("combinations: " + combinations);
 
@@ -152,7 +175,12 @@ public class DiabeticSemanticNetwork {
 
                 }
                 tempEdge.setFrom(existingFromNode);
-                existingFromNode.setEdge(tempEdge);
+                ArrayList<Edge> edges = existingFromNode.getEdges();
+                if (edges == null) {
+                    edges = new ArrayList<Edge>();
+                }
+                edges.add(tempEdge);
+                existingFromNode.setEdges(edges);
                 tempEdge.setTo(existingToNode);
                 myNetwork.addEdgeToNetwork(tempEdge);
                 myNodes.put(to, existingToNode);
@@ -165,7 +193,7 @@ public class DiabeticSemanticNetwork {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(" Network prepared");
+        //System.out.println(" Network prepared");
         return myNetwork;
 
 

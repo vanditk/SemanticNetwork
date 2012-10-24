@@ -4,8 +4,7 @@
  */
 package diabeticsemanticnetwork;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 /**
  *
@@ -16,7 +15,7 @@ public class Node{
     private String Value;
     //not needed
     
-    private Edge edge;
+    private ArrayList<Edge> edges;
 
     
     public Node(){Value = new String();}
@@ -60,15 +59,15 @@ public class Node{
     /**
      * @return the edge
      */
-    public Edge getEdge() {
-        return edge;
+    public ArrayList<Edge> getEdges() {
+        return edges;
     }
 
     /**
      * @param edge the edge to set
      */
-    public void setEdge(Edge edge) {
-        this.edge = edge;
+    public void setEdges(ArrayList<Edge> edge) {
+        this.edges = edge;
     }
 
     /**
